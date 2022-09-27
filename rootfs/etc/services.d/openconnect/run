@@ -1,0 +1,34 @@
+#!/usr/bin/with-contenv bash
+set -e -u -o pipefail
+
+python3 -m fortiproxy
+
+if [ -z "$SERVER" ]; then
+  echo "No server is set. Exiting."
+  exit 1
+fi
+
+if [ -z "$PORT" ]; then
+  echo "No password is set. Exiting."
+  exit 1
+fi
+
+echo "Reading token..."
+read TOKEN < /vpn/token
+if [ -z ${TOKEN} ]; do
+  echo "No token is set. Exiting."
+  exit 1
+fi
+echo "Token provided as ${TOKEN}"
+
+if [ ${DYNAMIC_TOKEN} = true ]; then
+  echo "Resetting token for next use..."
+  echo "" > /vpn/token
+fi
+
+echo "Starting openconnect..."
+openconnect ${SERVER}:${PORT} --pid-file=${OC_PID} --protocol=fortinet --cookie="SVPNCOOKIE=${TOKEN}"
+
+sleep infinity &
+
+wait
