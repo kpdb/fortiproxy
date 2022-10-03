@@ -23,6 +23,7 @@ All the configuration of `fortiproxy` python module is done through `.env` file.
 * `EMAIL` - Azure AD email used for sign-in,
 * `PASSWORD` - Azure AD password,
 * `SECRET` - 2FA TOTP secret used for token generation.
+* `BROWSER_PATH` - path to chromium based browser
 
 To check if everything works by running:
 
@@ -35,6 +36,15 @@ or
 ```
 
 If everything worked correctly, script should print SAML cookie to std output.
+
+### Running browser in xvfb
+
+There's `xvfb-chromium` script prepared for docker environment to run a browser (used by fortiproxy script) inside virtual framebuffer X server (xvfb). One can also use it for local invocation, but browser invocation
+
+```bash
+chromium --no-sandbox $@ &
+```
+needs to be adjusted to reflect real name of the one that exists in a local system.
 
 
 ## Connecting to VPN
